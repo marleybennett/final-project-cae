@@ -8,6 +8,17 @@
 #include <inttypes.h>
 #include <math.h>
 
+#define OPCODE_R_1 51
+#define OPCODE_R_2 59
+#define OPCODE_S 35
+#define OPCODE_I_1 3
+#define OPCODE_I_2 19
+#define OPCODE_I_3 27
+#define OPCODE_I_4 115
+#define OPCODE_U_1 23
+#define OPCODE_U_2 55
+#define OPCODE_UJ 111
+#define OPCODE_SB 99
 
 typedef struct{
     char opcode;

@@ -8,37 +8,36 @@ instruction * newInstruction(uint32_t binaryCode){
         return NULL;
     }
 
-    /* 127 = 0...01111111 to obtain least significant 7 bits corresponding to opcode*/
     instruct->opcode = calculateField(binaryCode, 0, 6);
     printf("opcode: %"PRId8"\n", instruct->opcode);
 
     /* Identify opcode (in decimal) and corresponding instruction type */
-    if(instruct->opcode == 51 || instruct->opcode == 59){
+    if(instruct->opcode == OPCODE_R_1 || instruct->opcode == OPCODE_R_2){
         instruct->instructType = 'R';
         decodeRType(instruct, binaryCode);
     }
 
-    else if(instruct->opcode == 35){
+    else if(instruct->opcode == OPCODE_S){
         instruct->instructType = 'S';
         decodeSType(instruct, binaryCode);
     }
 
-    else if(instruct->opcode == (3 || 19 || 27 || 115)){
+    else if(instruct->opcode == OPCODE_I_1 || instruct->opcode == OPCODE_I_2 || instruct->opcode == OPCODE_I_3 || instruct->opcode == OPCODE_I_4){
         instruct->instructType = 'I';
         decodeIType(instruct, binaryCode);
     }
 
-    else if(instruct->opcode == (23 || 55)){
+    else if(instruct->opcode == OPCODE_U_1 || instruct->opcode ==  OPCODE_U_2){
         instruct->instructType = 'U';
         decodeUType(instruct, binaryCode);
     }
 
-    else if(instruct->opcode == 111){
+    else if(instruct->opcode == OPCODE_UJ){
         instruct->instructType = 'J'; //Type UJ
         decodeUJType(instruct, binaryCode);
     }
 
-    else if(instruct->opcode == 99){
+    else if(instruct->opcode == OPCODE_SB){
         instruct->instructType = 'B'; //Type SB
         decodeSBType(instruct, binaryCode);
     }
@@ -59,9 +58,9 @@ void freeInstruction(instruction * i){
 
 
 /*
-    Use bitwise operator AND to remove the unnecessary "higher" bits.
+    Use bitwise operator AND to remove the unnecessary higher bits.
     Shift result to eliminate the uneccesary lower bits.
-    Leaves only the bits in the desired range.
+    Return only the bits in the desired range.
 */
 int calculateField(uint32_t binaryInstruction, int startBit, int endBit){
     
@@ -102,9 +101,10 @@ void decodeIType(instruction * i, uint32_t binaryInstruction){
 
 
 void decodeSType(instruction * i, uint32_t binaryInstruction){
-   
+
     i->immediate = calculateField(binaryInstruction, 7, 11);
     i->immediate += (calculateField(binaryInstruction, 20, 31) << 5);
+    
     i->funct3 = calculateField(binaryInstruction, 12, 14);
     i->rs1 = calculateField(binaryInstruction, 15, 19);
     i->rs2 = calculateField(binaryInstruction, 20, 24);
@@ -144,9 +144,11 @@ void decodeUType(instruction * i, uint32_t binaryInstruction){
 
 
 }
+
 void decodeUJType(instruction * i, uint32_t binaryInstruction){
     
     i->rd = calculateField(binaryInstruction, 7, 11);
+
     i->immediate = (calculateField(binaryInstruction, 12, 19) << 12);
     i->immediate += (calculateField(binaryInstruction, 20, 20) << 11);
     i->immediate += (calculateField(binaryInstruction, 21, 30) << 1);
@@ -162,9 +164,10 @@ int main() {
     uint32_t sampleSInstruction = 1533848995;
     uint32_t sampleSBInstruction = 2897955555;
     uint32_t sampleUJInstruction = 1775678959;
+    uint32_t sampleIInstruction = 766424723;
 
     // printf("sample instruction: %" PRId8 "\n", sampleRInstruction);
     
-    instruction* instruct = newInstruction(sampleUJInstruction);
+    instruction* instruct = newInstruction(sampleIInstruction);
     freeInstruction(instruct);
 }
