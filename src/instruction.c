@@ -9,7 +9,7 @@ instruction * newInstruction(uint32_t binaryCode){
     }
 
     instruct->opcode = calculateField(binaryCode, 0, 6);
-    printf("opcode: %"PRId8"\n", instruct->opcode);
+    printf("opcode: %x\n", instruct->opcode);
 
     /* Identify opcode (in decimal) and corresponding instruction type */
     if(instruct->opcode == OPCODE_R_1 || instruct->opcode == OPCODE_R_2){
@@ -64,7 +64,7 @@ void freeInstruction(instruction * i){
 */
 int calculateField(uint32_t binaryInstruction, int startBit, int endBit){
     
-    uint32_t totalBits = pow(2, endBit+1) - 1;
+    uint32_t totalBits = (1<<(endBit+1)) - 1;
     int value = ((totalBits & binaryInstruction) >> startBit);
     return value;
 }
@@ -77,11 +77,11 @@ void decodeRType(instruction * i, uint32_t binaryInstruction){
     i->rs2 = calculateField(binaryInstruction, 20, 24);
     i->funct7 = calculateField(binaryInstruction, 25, 31);
 
-    printf("rd: %d\n", i->rd);
-    printf("funct3: %d\n", i->funct3);
-    printf("rs1: %d\n", i->rs1);
-    printf("rs2: %d\n", i->rs2);
-    printf("funct7: %d\n", i->funct7);   
+    printf("rd: 0x%x\n", i->rd);
+    printf("funct3: 0x%x\n", i->funct3);
+    printf("rs1: 0x%x\n", i->rs1);
+    printf("rs2: 0x%x\n", i->rs2);
+    printf("funct7: 0x%x\n", i->funct7);   
 }
 
 void decodeIType(instruction * i, uint32_t binaryInstruction){
@@ -92,10 +92,10 @@ void decodeIType(instruction * i, uint32_t binaryInstruction){
     i->immediate = calculateField(binaryInstruction, 20, 24);
 
 
-    printf("destination register: %d\n", i->rd);
-    printf("funct3: %d\n", i->funct3);
-    printf("rs1: %d\n", i->rs1);
-    printf("immediate: %d\n", i->immediate);
+    printf("destination register: 0x%x\n", i->rd);
+    printf("funct3: 0x%x\n", i->funct3);
+    printf("rs1: 0x%x\n", i->rs1);
+    printf("immediate: 0x%x\n", i->immediate);
  
 }
 
@@ -109,10 +109,10 @@ void decodeSType(instruction * i, uint32_t binaryInstruction){
     i->rs1 = calculateField(binaryInstruction, 15, 19);
     i->rs2 = calculateField(binaryInstruction, 20, 24);
 
-    printf("funct3: %d\n", i->funct3);
-    printf("rs1: %d\n", i->rs1);
-    printf("rs2: %d\n", i->rs2);
-    printf("immediate: %d\n", i->immediate);   
+    printf("funct3: 0x%x\n", i->funct3);
+    printf("rs1: 0x%x\n", i->rs1);
+    printf("rs2: 0x%x\n", i->rs2);
+    printf("immediate: 0x%x\n", i->immediate);   
 
 }
 
@@ -127,10 +127,10 @@ void decodeSBType(instruction * i, uint32_t binaryInstruction){
     i->rs1 = calculateField(binaryInstruction, 15, 19);
     i->rs2 = calculateField(binaryInstruction, 20, 24);
 
-    printf("funct3: %d\n", i->funct3);
-    printf("rs1: %d\n", i->rs1);
-    printf("rs2: %d\n", i->rs2);
-    printf("immediate: %d\n", i->immediate);   
+    printf("funct3: 0x%x\n", i->funct3);
+    printf("rs1: 0x%x\n", i->rs1);
+    printf("rs2: 0x%x\n", i->rs2);
+    printf("immediate: 0x%x\n", i->immediate);   
 
 }
 
@@ -139,8 +139,8 @@ void decodeUType(instruction * i, uint32_t binaryInstruction){
     i->rd = calculateField(binaryInstruction, 7, 11);
     i->immediate = calculateField(binaryInstruction, 12, 31);
 
-    printf("rd: %d\n", i->rd);   
-    printf("immediate: %d\n", i->immediate);   
+    printf("rd: 0x%x\n", i->rd);   
+    printf("immediate: 0x%x\n", i->immediate);   
 
 
 }
@@ -154,8 +154,8 @@ void decodeUJType(instruction * i, uint32_t binaryInstruction){
     i->immediate += (calculateField(binaryInstruction, 21, 30) << 1);
     i->immediate += (calculateField(binaryInstruction, 31, 31) << 20);
 
-    printf("rd: %d\n", i->rd);   
-    printf("immediate: %d\n", i->immediate);   
+    printf("rd: 0x%x\n", i->rd);   
+    printf("immediate: 0x%x\n", i->immediate);   
 
 }
 
