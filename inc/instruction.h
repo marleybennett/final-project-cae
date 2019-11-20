@@ -16,12 +16,11 @@
 #define OPCODE_I_2 0b10011
 #define OPCODE_I_3 0b11011
 #define OPCODE_I_4 0b1110011
+#define OPCODE_I_5 0b1100111
 #define OPCODE_U_1 0b10111
 #define OPCODE_U_2 0b110111
 #define OPCODE_UJ 0b1101111
 #define OPCODE_SB 0b1100011
-
-#define TEST 0b11011
 
 typedef uint32_t WORD;
 

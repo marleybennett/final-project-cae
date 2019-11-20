@@ -11,8 +11,6 @@ int executeInstruction(instruction ins, struct emulator emu){
     int rs1 = ins.rs1;
     int rs2 = ins.rs2;
 
-    //skipping all loads :D
-
     // int test_rd;
     // int test_rs1 = 0b001101; //13
     // int test_rs2 = 0b0010001; //17
@@ -21,7 +19,19 @@ int executeInstruction(instruction ins, struct emulator emu){
     // test_rd = (test_rs1 ^ test_imm);
     // printf("test: %d\n", test_rd);
 
-    if(opcode == OPCODE_I_2){
+    if(opcode == OPCODE_I_1){
+        if(funct3 == FUNCT3_0) //lb
+        else if(funct3 == FUNCT3_1) //lh
+        else if(funct3 == FUNCT3_2) //lw
+        else if(funct3 == FUNCT3_3) //ld
+        else if(funct3 == FUNCT3_4) //lbu
+        else if(funct3 == FUNCT3_5) //lhu
+        else if(funct3 == FUNCT3_6) //lwu
+
+        programCounter += 1;
+    }
+
+    else if(opcode == OPCODE_I_2){
         if(funct3 = FUNCT3_0) //addi
             emu.registers[rd] = emu.registers[rs1] + immediate;
         else if(funct3 == FUNCT3_1 && funct7 == FUNCT7_0) //slli
@@ -41,7 +51,7 @@ int executeInstruction(instruction ins, struct emulator emu){
         else if(funct3 == FUNCT3_7) //andi
             emu.registers[rd] = emu.registers[rs1] & immediate;
         
-        programCounter+=1;
+        programCounter += 1;
     }
 
     else if(opcode == OPCODE_U_1){ //aupic
@@ -57,6 +67,70 @@ int executeInstruction(instruction ins, struct emulator emu){
             emu.registers[rd] = emu.registers[rs1] >> immediate;
         else if(funct3 == FUNCT3_5 && funct7 == FUNCT7_1) //sraiw
             emu.registers[rd] = emu.registers[rs1] >> immediate;
+        
+        programCounter += 1;
+    }
+
+    else if(opcode == OPCODE_S){
+        if(funct3 == FUNCT3_0) //sb
+        else if (funct3 == FUNCT3_1) //sh
+        else if (funct3 == FUNCT3_2) //sw
+        else if (funct3 == FUNCT3_3) //sd
+
+        programCounter += 1;
+    }
+
+    else if(opcode == OPOCDE_R_1){
+        if(funct3 == FUNCT3_0 && funct7 == FUNCT7_0) //add
+        else if(funct3 == FUNCT3_0 && funct7 == FUNCT7_1) //sub
+        else if (funct3 == FUNCT3_1 && funct7 == FUNCT7_0) //sll
+        else if (funct3 == FUNCT3_2 && funct7 == FUNCT7_0) //slt
+        else if (funct3 == FUNCT3_3 && funct7 == FUNCT7_0) //sltu
+        else if (funct3 == FUNCT3_4 && funct7 == FUNCT7_0) //xor
+        else if (funct3 == FUNCT3_5 && funct7 == FUNCT7_0) //srl
+        else if (funct3 == FUNCT3_5 && funct& == FUNCT7_1) //sra
+        else if (funct3 == FUNCT3_6 && funct& == FUNCT7_0) //or
+        else if (funct3 == FUNCT3_7 && funct& == FUNCT7_0) //and
+
+        programCounter += 1;
+    }
+
+    else if(opocde == OPCODE_U_2){
+        //lui
+
+        programCounter += 1;
+    }
+
+    else if(opcode == OPCODE_R_2){
+        if(funct3 == FUNCT3_0 && funct7 = FUNCT7_0) //addw
+        else if(funct3 == FUNCT3_0 && funct7 == FUNCT7_1) //subw
+        else if(funct3 == FUNCT3_1 && funct7 == FUNCT7_0) //sllw
+        else if(funct3 == FUNCT3_5 && funct7 == FUNCT7_0) //srlw
+        else if(funct3 == FUNCT3_5 && funct7 == FUNCT7_1) //srlw
+
+        programCounter += 1;
+    }
+
+    else if(opcode == OPCODE_SB){
+        if(funct3 == FUNCT3_0) //beq
+        else if(funct3 == FUNCT3_1) //bne
+        else if(funct3 == FUNCT3_4) //blt
+        else if(funct3 == FUNCT3_5) //bge
+        else if(funct3 == FUNCT3_6) //bltu
+        else if(funct3 == FUNCT3_7) //bgeu
+    }
+
+    else if(opcode == OPCODE_I_5){ //need something sorta clever here!!
+        if(funct3 == FUNCT3_0) //jalr
+    }
+
+    else if(opcode == OPCODE_UJ){
+        //jal
+    }
+
+    else if(opcode == OPCODE_I_4){
+        if(funct3 == FUNCT3_0 && funct7 == FUNCT7_0) //ecall
+        else if(funct3 == FUNCT3_0 && funct7 == FUNCT7_1) //ebreak
     }
 
     return programCounter;

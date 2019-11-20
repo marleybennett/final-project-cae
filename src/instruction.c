@@ -18,7 +18,7 @@ instruction newInstruction(WORD binaryCode){
         instruct = decodeSType(instruct, binaryCode);
     }
 
-    else if(instruct.opcode == OPCODE_I_1 || instruct.opcode == OPCODE_I_2 || instruct.opcode == OPCODE_I_3 || instruct.opcode == OPCODE_I_4){
+    else if(instruct.opcode == OPCODE_I_1 || instruct.opcode == OPCODE_I_2 || instruct.opcode == OPCODE_I_3 || instruct.opcode == OPCODE_I_4 || instruct.opocde == OPCODE_I_5){
         instruct.instructType = 'I';
         instruct = decodeIType(instruct, binaryCode);
     }
