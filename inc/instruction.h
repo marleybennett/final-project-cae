@@ -8,6 +8,8 @@
 #include <inttypes.h>
 #include <math.h>
 
+#include "emulator.h"
+
 #define OPCODE_R_1 51
 #define OPCODE_R_2 59
 #define OPCODE_S 35
@@ -28,7 +30,7 @@ typedef struct{
     int rs2; //0-31
     int funct3;
     int funct7;
-    int immediate;
+    usint32_t immediate;
 } instruction;
 
 instruction * newInstruction(uint32_t instruction);
