@@ -7,6 +7,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include <math.h>
+#include "emulator.h"
 
 
 #define OPCODE_R_1 0b110011

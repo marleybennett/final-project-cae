@@ -18,7 +18,7 @@ instruction newInstruction(WORD binaryCode){
         instruct = decodeSType(instruct, binaryCode);
     }
 
-    else if(instruct.opcode == OPCODE_I_1 || instruct.opcode == OPCODE_I_2 || instruct.opcode == OPCODE_I_3 || instruct.opcode == OPCODE_I_4 || instruct.opocde == OPCODE_I_5){
+    else if(instruct.opcode == OPCODE_I_1 || instruct.opcode == OPCODE_I_2 || instruct.opcode == OPCODE_I_3 || instruct.opcode == OPCODE_I_4 || instruct.opcode == OPCODE_I_5){
         instruct.instructType = 'I';
         instruct = decodeIType(instruct, binaryCode);
     }
@@ -82,13 +82,13 @@ instruction decodeIType(instruction i, WORD binaryInstruction){
     i.rd = calculateField(binaryInstruction, 7, 11);
     i.funct3 = calculateField(binaryInstruction, 12, 14);
     i.rs1 = calculateField(binaryInstruction, 15, 19);
-    i.immediate = calculateField(binaryInstruction, 20, 24);
+    i.immediate.s = calculateField(binaryInstruction, 20, 31);
 
 
     printf("destination register: 0x%x\n", i.rd);
     printf("funct3: 0x%x\n", i.funct3);
     printf("rs1: 0x%x\n", i.rs1);
-    printf("immediate: 0x%x\n", i.immediate);
+    printf("immediate: 0x%x\n", i.immediate.s);
  
     return i;
 }
@@ -96,8 +96,8 @@ instruction decodeIType(instruction i, WORD binaryInstruction){
 
 instruction decodeSType(instruction i, WORD binaryInstruction){
 
-    i.immediate = calculateField(binaryInstruction, 7, 11);
-    i.immediate += (calculateField(binaryInstruction, 20, 31) << 5);
+    i.immediate.s = calculateField(binaryInstruction, 7, 11);
+    i.immediate.s += (calculateField(binaryInstruction, 20, 31) << 5);
     
     i.funct3 = calculateField(binaryInstruction, 12, 14);
     i.rs1 = calculateField(binaryInstruction, 15, 19);
@@ -106,17 +106,17 @@ instruction decodeSType(instruction i, WORD binaryInstruction){
     printf("funct3: 0x%x\n", i.funct3);
     printf("rs1: 0x%x\n", i.rs1);
     printf("rs2: 0x%x\n", i.rs2);
-    printf("immediate: 0x%x\n", i.immediate);   
+    printf("immediate: 0x%x\n", i.immediate.s);   
 
     return i;
 }
 
 instruction decodeSBType(instruction i, WORD binaryInstruction){
 
-    i.immediate = (calculateField(binaryInstruction, 8, 11) << 1);
-    i.immediate += (calculateField(binaryInstruction, 25, 30) << 5);
-    i.immediate += (calculateField(binaryInstruction, 7, 7) << 11);
-    i.immediate += (calculateField(binaryInstruction, 31, 31) << 12);
+    i.immediate.s = (calculateField(binaryInstruction, 8, 11) << 1);
+    i.immediate.s += (calculateField(binaryInstruction, 25, 30) << 5);
+    i.immediate.s += (calculateField(binaryInstruction, 7, 7) << 11);
+    i.immediate.s += (calculateField(binaryInstruction, 31, 31) << 12);
 
     i.funct3 = calculateField(binaryInstruction, 12, 14);
     i.rs1 = calculateField(binaryInstruction, 15, 19);
@@ -125,7 +125,7 @@ instruction decodeSBType(instruction i, WORD binaryInstruction){
     printf("funct3: 0x%x\n", i.funct3);
     printf("rs1: 0x%x\n", i.rs1);
     printf("rs2: 0x%x\n", i.rs2);
-    printf("immediate: 0x%x\n", i.immediate);   
+    printf("immediate: 0x%x\n", i.immediate.s);   
     
     return i;
 }
@@ -133,10 +133,10 @@ instruction decodeSBType(instruction i, WORD binaryInstruction){
 instruction decodeUType(instruction i, WORD binaryInstruction){
 
     i.rd = calculateField(binaryInstruction, 7, 11);
-    i.immediate = calculateField(binaryInstruction, 12, 31);
+    i.immediate.s = calculateField(binaryInstruction, 12, 31);
 
     printf("rd: 0x%x\n", i.rd);   
-    printf("immediate: 0x%x\n", i.immediate);   
+    printf("immediate: 0x%x\n", i.immediate.s);   
 
     return i;
 }
@@ -145,13 +145,13 @@ instruction decodeUJType(instruction i, WORD binaryInstruction){
     
     i.rd = calculateField(binaryInstruction, 7, 11);
 
-    i.immediate = (calculateField(binaryInstruction, 12, 19) << 12);
-    i.immediate += (calculateField(binaryInstruction, 20, 20) << 11);
-    i.immediate += (calculateField(binaryInstruction, 21, 30) << 1);
-    i.immediate += (calculateField(binaryInstruction, 31, 31) << 20);
+    i.immediate.s = (calculateField(binaryInstruction, 12, 19) << 12);
+    i.immediate.s += (calculateField(binaryInstruction, 20, 20) << 11);
+    i.immediate.s += (calculateField(binaryInstruction, 21, 30) << 1);
+    i.immediate.s += (calculateField(binaryInstruction, 31, 31) << 20);
 
     printf("rd: 0x%x\n", i.rd);   
-    printf("immediate: 0x%x\n", i.immediate);  
+    printf("immediate: 0x%x\n", i.immediate.s);  
 
     return i;
 }
