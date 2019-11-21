@@ -82,15 +82,25 @@ int executeInstruction(instruction ins, struct emulator emu){
 
     else if(opcode == OPOCDE_R_1){
         if(funct3 == FUNCT3_0 && funct7 == FUNCT7_0) //add
+            emu.registers[rd] = emu.registers[rs1] + emu.registers[rs2];
         else if(funct3 == FUNCT3_0 && funct7 == FUNCT7_1) //sub
+            emu.registers[rd] = emu.registers[rs1] - emu.registers[rs2];
         else if (funct3 == FUNCT3_1 && funct7 == FUNCT7_0) //sll
+            emu.registers[rd] = emu.registers[rs1] << emu.registers[rs2];
         else if (funct3 == FUNCT3_2 && funct7 == FUNCT7_0) //slt
+            emu.registers[rd] = (emu.registers[rs1] < emu.registers[rs2]) ? 1:0;
         else if (funct3 == FUNCT3_3 && funct7 == FUNCT7_0) //sltu
+            emu.registers[rd] = (emu.registers[rs1] < emu.registers[rs2]) ? 1:0;
         else if (funct3 == FUNCT3_4 && funct7 == FUNCT7_0) //xor
+            emu.registers[rd] = (emu.registers[rs1] ^ emu.registers[rs2]);
         else if (funct3 == FUNCT3_5 && funct7 == FUNCT7_0) //srl
+            emu.registers[rd] = emu.registers[rs1] >> emu.registers[rs2];
         else if (funct3 == FUNCT3_5 && funct& == FUNCT7_1) //sra
+            emu.registers[rd] = emu.registers[rs1] >> emu.registers[rs2];
         else if (funct3 == FUNCT3_6 && funct& == FUNCT7_0) //or
+            emu.regisers[rd] = emu.registers[rs1] | emu.registers[rs2];
         else if (funct3 == FUNCT3_7 && funct& == FUNCT7_0) //and
+            emu.regisers[rd] = emu.registers[rs1] & emu.registers[rs2];
 
         programCounter += 1;
     }
