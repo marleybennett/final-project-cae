@@ -8,13 +8,18 @@
 
 typedef uint32_t WORD;
 
+typedef union {
+    uint32_t u;
+    int32_t s;
+} usint32_t;
+
 struct program {
     WORD instruction_count;
     WORD *instructions;
 };
 
 struct emulator {
-    WORD registers[32];
+    usint32_t registers[32];
     WORD program_counter;
     struct program program;
 };
