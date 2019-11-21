@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "emulator.h"
 
 int init_emulator(struct emulator *emu)
@@ -9,6 +11,8 @@ int init_emulator(struct emulator *emu)
     {
 	return -1;
     }
+
+    memset(emu->registers, 0, 32 * sizeof(usint32_t));
 
     return 0;
 }
@@ -59,6 +63,21 @@ int load_program(struct emulator *emu, char *filename)
     
     emu->program.instructions = (WORD *)file_contents;
     emu->program.instruction_count = file_len / WORD_LENGTH_BYTES;
+
+    fclose(f);
+    return 0;
+}
+
+int output_registers(struct emulator *emu, char *filename)
+{
+
+    FILE *f = fopen(filename, "wb");
+    if (f == NULL)
+    {
+	return -1;
+    }
+
+    fwrite(emu->registers, sizeof(usint32_t), 32, f);
 
     fclose(f);
     return 0;
