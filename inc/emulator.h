@@ -7,6 +7,7 @@
 #define WORD_LENGTH_BYTES (WORD_LENGTH_BITS/8)
 
 typedef uint32_t WORD;
+typedef uint8_t BYTE;
 
 typedef union {
     uint32_t u;
@@ -22,8 +23,11 @@ struct emulator {
     usint32_t registers[32];
     WORD program_counter;
     struct program program;
+    BYTE *memory;
 };
 
 int load_program(struct emulator *emu, char *filename);
+int init_emulator(struct emulator *emu);
+void deinit_emulator(struct emulator *emu);
 
 #endif

@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include "emulator.h"
 
+int init_emulator(struct emulator *emu)
+{
+    emu->memory = malloc(0xFFFFFFFF);
+    if (emu->memory == NULL)
+    {
+	return -1;
+    }
+
+    return 0;
+}
+
+void deinit_emulator(struct emulator *emu)
+{
+    free(emu->memory);
+}
+
 int load_program(struct emulator *emu, char *filename)
 {
     if (emu == NULL || filename == NULL)
