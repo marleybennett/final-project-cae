@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     while(1){
 	    printf("%08x\n", emu.program.instructions[emu.program_counter]);
 	    ins = newInstruction(emu.program.instructions[emu.program_counter]);
-        emu.program_counter = executeInstruction(ins, emu);
+        emu.program_counter = executeInstruction(ins, &emu);
         printf("-------------------------------\n\n");
         if(emu.program_counter > emu.program.instruction_count)
             break;

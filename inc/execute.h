@@ -19,7 +19,7 @@
 
 
 
-int executeInstruction(instruction ins, struct emulator emu);
+int executeInstruction(instruction ins, struct emulator * emu);
 
 
 
