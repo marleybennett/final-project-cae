@@ -1,29 +1,32 @@
 
-#ifndef INSTRUCTION_H
-#define INSTRUCTION_H
+#ifndef __INSTRUCTION_H
+#define __INSTRUCTION_H
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
 #include <math.h>
-
 #include "emulator.h"
 
-#define OPCODE_R_1 51
-#define OPCODE_R_2 59
-#define OPCODE_S 35
-#define OPCODE_I_1 3
-#define OPCODE_I_2 19
-#define OPCODE_I_3 27
-#define OPCODE_I_4 115
-#define OPCODE_U_1 23
-#define OPCODE_U_2 55
-#define OPCODE_UJ 111
-#define OPCODE_SB 99
+
+#define OPCODE_R_1 0b110011
+#define OPCODE_R_2 0b111011
+#define OPCODE_S 0b100011
+#define OPCODE_I_1 0b11
+#define OPCODE_I_2 0b10011
+#define OPCODE_I_3 0b11011
+#define OPCODE_I_4 0b1110011
+#define OPCODE_I_5 0b1100111
+#define OPCODE_U_1 0b10111
+#define OPCODE_U_2 0b110111
+#define OPCODE_UJ 0b1101111
+#define OPCODE_SB 0b1100011
+
+typedef uint32_t WORD;
 
 typedef struct{
-    char opcode;
+    int opcode;
     char instructType;
     int rd; //0-31
     int rs1; //0-31
@@ -33,17 +36,16 @@ typedef struct{
     usint32_t immediate;
 } instruction;
 
-instruction * newInstruction(uint32_t instruction);
-void freeInstruction(instruction *i);
-int calculateField(uint32_t binaryInstruction, int startBit, int endBit);
+instruction newInstruction(WORD instruction);
+int calculateField(WORD binaryInstruction, int startBit, int endBit);
 
 
-void decodeRType(instruction * i, uint32_t binaryInstruction);
-void decodeSType(instruction * i, uint32_t binaryInstruction);
-void decodeIType(instruction * i, uint32_t binaryInstruction);
-void decodeUType(instruction * i, uint32_t binaryInstruction);
-void decodeUJType(instruction * i, uint32_t binaryInstruction);
-void decodeSBType(instruction * i, uint32_t binaryInstruction);
+instruction decodeRType(instruction i, WORD binaryInstruction);
+instruction decodeSType(instruction i, WORD binaryInstruction);
+instruction decodeIType(instruction i, WORD binaryInstruction);
+instruction decodeUType(instruction i, WORD binaryInstruction);
+instruction decodeUJType(instruction i, WORD binaryInstruction);
+instruction decodeSBType(instruction i, WORD binaryInstruction);
 
 
 #endif
