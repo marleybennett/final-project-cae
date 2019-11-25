@@ -3,44 +3,55 @@
 #include "emulator.h"
 #include "instruction.h"
 
-int main(int argc, char *argv[])
+// The attribute allows us to overwrite the main function without the
+// compiler complaining about multiple definitions of the
+// function. This makes testing easier and requires no Makefile
+// shenanigans. 
+__attribute__((weak)) int main(int argc, char *argv[])
 {
-    struct emulator emu;
-
-    printf("Loading program: %s\n", argv[1]);
-
-    load_program(&emu, argv[1]);
-
-    printf("Program length is %d\n", emu.program.instruction_count);
-
-    // instruction ins;
-    // for (int i = 0; i < emu.program.instruction_count; ++i)
-    // {
-	// printf("%x: %08x\n", i, emu.program.instructions[i]);
-	// ins = newInstruction(emu.program.instructions[i]);
-	// printf("-------------------------------\n\n");
-    // }
-
-    instruction ins;
-    emu.program_counter = 0;
-
-    emu.registers[0].s = 0;
-
-    while((emu.program_counter != -1) && (emu.program_counter < (emu.program.instruction_count - 1))){
-	    printf("program counter: %d; %08x\n", emu.program_counter, emu.program.instructions[emu.program_counter]);
-	    ins = newInstruction(emu.program.instructions[emu.program_counter]);
-        emu.program_counter = executeInstruction(ins, &emu);
-        for(int i = 0; i < 3; i++)
-            printf("\t %d: %0x\n", i+10, emu.registers[i+10].s);
-        printf("-------------------------------\n\n");
-        
+    if (argc < 2)
+    {
+	printf("Usage:\n%s filename\n", argv[0]);
     }
 
-    printf("----\nregister content:\n ");
+    struct emulator emu;
+    
+    int err = 0;
+    char *filename = argv[1];
+
+    err = init_emulator(&emu);
+    if (err != 0)
+    {
+	printf("Failed to initialize emulator\n");
+	goto out;
+    }
+    
+    printf("Loading program: %s\n", filename);
+    err = load_program(&emu, filename);
+    if (err != 0)
+    {
+	printf("Failed to load file %s\n", filename);
+	goto out;
+
+    }
+
+    instruction ins;
+
+    while(emu.program_counter>>2 < emu.program.instruction_count)
+    {
+	ins = newInstruction(emu.program.instructions[emu.program_counter>>2]);
+        emu.program_counter = executeInstruction(ins, &emu);
+    }
+
+    printf("Register file contents:\n ");
 
     for(int i = 0; i < 32; i++){
         printf("%d: %0x\n", i, emu.registers[i].s);
     }
+    output_registers(&emu, "registers.bin");
 
-    return 0;
+
+out:
+    deinit_emulator(&emu);
+    return err;
 }
