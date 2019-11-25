@@ -27,6 +27,8 @@ struct emulator {
 };
 
 int load_program(struct emulator *emu, char *filename);
+int output_registers(struct emulator *emu, char *filename);
+
 int init_emulator(struct emulator *emu);
 void deinit_emulator(struct emulator *emu);
 
