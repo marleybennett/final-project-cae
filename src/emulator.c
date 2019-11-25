@@ -4,7 +4,8 @@
 
 int init_emulator(struct emulator *emu)
 {
-    emu->memory = malloc(0xFFFFFFFF);
+    emu->program_counter = 0;
+    emu->memory = malloc(0x200000);
     if (emu->memory == NULL)
     {
 	return -1;
