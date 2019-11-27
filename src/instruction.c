@@ -83,12 +83,17 @@ instruction decodeIType(instruction i, WORD binaryInstruction){
     i.funct3 = calculateField(binaryInstruction, 12, 14);
     i.rs1 = calculateField(binaryInstruction, 15, 19);
     i.immediate.s = calculateField(binaryInstruction, 20, 31);
+    i.signBit = (0x80000000 & binaryInstruction) >> 31;
+    
 
+    printf("immediate.s: 0x%x\n", i.immediate.s);
+    printf("immediate.u: 0x%u\n", i.immediate.u);
 
     printf("destination register: 0x%x\n", i.rd);
     printf("funct3: 0x%x\n", i.funct3);
     printf("rs1: 0x%x\n", i.rs1);
-    printf("immediate: 0x%x\n", i.immediate.s);
+    printf("immediate.s: 0x%x\n", i.immediate.s);
+    printf("immediate.u: 0x%u\n", i.immediate.u);
  
     return i;
 }
@@ -98,6 +103,8 @@ instruction decodeSType(instruction i, WORD binaryInstruction){
 
     i.immediate.s = calculateField(binaryInstruction, 7, 11);
     i.immediate.s += (calculateField(binaryInstruction, 20, 31) << 5);
+
+    i.signBit = (0x80000000 & binaryInstruction) >> 31;
     
     i.funct3 = calculateField(binaryInstruction, 12, 14);
     i.rs1 = calculateField(binaryInstruction, 15, 19);
@@ -118,6 +125,8 @@ instruction decodeSBType(instruction i, WORD binaryInstruction){
     i.immediate.s += (calculateField(binaryInstruction, 7, 7) << 11);
     i.immediate.s += (calculateField(binaryInstruction, 31, 31) << 12);
 
+    i.signBit = (0x80000000 & binaryInstruction) >> 31;
+
     i.funct3 = calculateField(binaryInstruction, 12, 14);
     i.rs1 = calculateField(binaryInstruction, 15, 19);
     i.rs2 = calculateField(binaryInstruction, 20, 24);
@@ -134,6 +143,9 @@ instruction decodeUType(instruction i, WORD binaryInstruction){
 
     i.rd = calculateField(binaryInstruction, 7, 11);
     i.immediate.s = calculateField(binaryInstruction, 12, 31);
+    i.signBit = (0x80000000 & binaryInstruction) >> 31;
+    printf("%0x & 0x80000000 = %d\n", binaryInstruction, i.signBit);
+
 
     printf("rd: 0x%x\n", i.rd);   
     printf("immediate: 0x%x\n", i.immediate.s);   
@@ -149,6 +161,9 @@ instruction decodeUJType(instruction i, WORD binaryInstruction){
     i.immediate.s += (calculateField(binaryInstruction, 20, 20) << 11);
     i.immediate.s += (calculateField(binaryInstruction, 21, 30) << 1);
     i.immediate.s += (calculateField(binaryInstruction, 31, 31) << 20);
+
+    i.signBit = (0x80000000 & binaryInstruction) >> 31;
+
 
     printf("rd: 0x%x\n", i.rd);   
     printf("immediate: 0x%x\n", i.immediate.s);  

@@ -20,7 +20,7 @@
 
 
 int executeInstruction(instruction ins, struct emulator * emu);
-
+int32_t signExtendImmediate(int numBits, int signBit, int32_t immediateValue);
 
 
 #endif
