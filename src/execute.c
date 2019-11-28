@@ -1,4 +1,5 @@
 #include "execute.h"
+#include "memory.h"
 
 
 int32_t signExtendImmediate(int numBits, int signBit, int32_t signedValue){
@@ -26,30 +27,26 @@ int executeInstruction(instruction ins, struct emulator * emu){
     int imm5;
 
 
-    // if(opcode == OPCODE_I_1){
-    //     extendImmediate = signExtendImmediate(12, signBit, immediate);
+    if(opcode == OPCODE_I_1){
+        extendImmediate = signExtendImmediate(12, signBit, immediate);
 
-    //     if(funct3 == FUNCT3_0) //lb
-    //         emu->registers[rd].s = memory_load_byte(emu, (emu->registers[rs1].s + extendImmediate));
-    //     else if(funct3 == FUNCT3_1) //lh
-    //         emu->registers[rd].s = memory_load_halfword(emu, (emu->registers[rs1].s + extendImmediate));
-    //     else if(funct3 == FUNCT3_2) //lw
-    //         emu->registers[rd].s = memory_load_word(emu, (emu->registers[rs1].s + extendImmediate));
-    //     else if(funct3 == FUNCT3_4) //lbu
-    //         emu->registers[rd].u = memory_load_byte(emu, (emu->registers[rs1].u + unsignedImmediate));
-    //     else if(funct3 == FUNCT3_5) //lhu
-    //         emu->registers[rd].u = memory_load_halfword(emu, (emu->registers[rs1].u + unsignedImmediate));
-    //     else if(funct3 == FUNCT3_6) //lwu
-    //         emu->registers[rd].u = memory_load_word(emu, (emu->registers[rs1].u + unsignedImmediate));
+        if(funct3 == FUNCT3_0) //lb
+            emu->registers[rd].s = memory_load_byte(emu, (emu->registers[rs1].s + extendImmediate));
+        else if(funct3 == FUNCT3_1) //lh
+            emu->registers[rd].s = memory_load_halfword(emu, (emu->registers[rs1].s + extendImmediate));
+        else if(funct3 == FUNCT3_2) //lw
+            emu->registers[rd].s = memory_load_word(emu, (emu->registers[rs1].s + extendImmediate));
+        else if(funct3 == FUNCT3_4) //lbu
+            emu->registers[rd].u = memory_load_byte(emu, (emu->registers[rs1].u + unsignedImmediate));
+        else if(funct3 == FUNCT3_5) //lhu
+            emu->registers[rd].u = memory_load_halfword(emu, (emu->registers[rs1].u + unsignedImmediate));
+        else if(funct3 == FUNCT3_6) //lwu
+            emu->registers[rd].u = memory_load_word(emu, (emu->registers[rs1].u + unsignedImmediate));
 
-    //     programCounter = programCounter 1;
-    // }
+        programCounter = programCounter + 4;
+    }
 
-   // else 
-
-
-
-    if(opcode == OPCODE_I_2){
+    else if(opcode == OPCODE_I_2){
         extendImmediate = signExtendImmediate(12, signBit, immediate);
         imm7 = (0b111111100000 & extendImmediate) >> 5;
         imm5 = (0b000000011111 & extendImmediate);  
@@ -68,7 +65,7 @@ int executeInstruction(instruction ins, struct emulator * emu){
             emu->registers[rd].s = emu->registers[rs1].s >> imm5;
         else if(funct3 == FUNCT3_5 && imm7 == FUNCT7_1) {//srai //issues with sign extentsion
             emu->registers[rd].s = emu->registers[rs1].s >> imm5;
-    }
+	}
         else if(funct3 == FUNCT3_6) //ori
             emu->registers[rd].s = emu->registers[rs1].s | extendImmediate;
         else if(funct3 == FUNCT3_7) //andi
@@ -100,18 +97,18 @@ int executeInstruction(instruction ins, struct emulator * emu){
         programCounter = programCounter + 4;
     }
 
-    // else if(opcode == OPCODE_S){
-    //     extendImmediate = signExtendImmediate(12, signBit, immediate);
+    else if(opcode == OPCODE_S){
+        extendImmediate = signExtendImmediate(12, signBit, immediate);
 
-    //     if(funct3 == FUNCT3_0) //sb
-    //         memory_store_byte(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
-    //     else if (funct3 == FUNCT3_1) //sh
-    //         memory_store_halfword(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
-    //     else if (funct3 == FUNCT3_2) //sw
-    //         memory_store_word(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
+        if(funct3 == FUNCT3_0) //sb
+            memory_store_byte(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
+        else if (funct3 == FUNCT3_1) //sh
+            memory_store_halfword(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
+        else if (funct3 == FUNCT3_2) //sw
+            memory_store_word(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
         
-    //     programCounter = programCounter 1;
-    // }
+        programCounter = programCounter + 4;
+    }
 
     else if(opcode == OPCODE_R_1){
         if(funct3 == FUNCT3_0 && funct7 == FUNCT7_0) //add
