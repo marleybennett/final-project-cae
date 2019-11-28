@@ -39,6 +39,7 @@ __attribute__((weak)) int main(int argc, char *argv[])
 
     while(emu.program_counter>>2 < emu.program.instruction_count)
     {
+	emu.registers[0].s = 0;
 	ins = newInstruction(emu.program.instructions[emu.program_counter>>2]);
         emu.program_counter = executeInstruction(ins, &emu);
     }

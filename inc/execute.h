@@ -17,10 +17,7 @@
 #define FUNCT7_0 0b0000000
 #define FUNCT7_1 0b0100000
 
-
-
 int executeInstruction(instruction ins, struct emulator * emu);
-int32_t signExtendImmediate(int numBits, int signBit, int32_t immediateValue);
 
 
 #endif
