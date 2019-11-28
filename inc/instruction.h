@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
-#include <math.h>
 #include "emulator.h"
 
 
@@ -34,11 +33,13 @@ typedef struct{
     int funct3;
     int funct7;
     usint32_t immediate;
+    int signBit;
 } instruction;
 
 instruction newInstruction(WORD instruction);
 int calculateField(WORD binaryInstruction, int startBit, int endBit);
 
+// void signExtend2(int signBit, usint32_t * immediateValue);
 
 instruction decodeRType(instruction i, WORD binaryInstruction);
 instruction decodeSType(instruction i, WORD binaryInstruction);

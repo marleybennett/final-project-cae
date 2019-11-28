@@ -1,94 +1,114 @@
 #include "execute.h"
 
+
+int32_t signExtendImmediate(int numBits, int signBit, int32_t signedValue){
+    if(signBit == 1){
+        signedValue = ((0xFFFFFFFF << numBits) | signedValue); 
+        printf("sign bit: 0x%0x sign extended immediate: 0x%0x\n", signBit, signedValue);
+    }
+    return signedValue;
+}
+
 int executeInstruction(instruction ins, struct emulator * emu){
 
     int programCounter = emu->program_counter;
     int opcode = ins.opcode;
     int funct3 = ins.funct3;
-    int funct7 = ins.funct7; //or immediate?
-    int imm = (ins.immediate.s >> 5);
-    int immediate = ins.immediate.s;
+    int funct7 = ins.funct7;
     int unsignedImmediate= ins.immediate.u;
+    int immediate = ins.immediate.s;
     int rd = ins.rd;
     int rs1 = ins.rs1;
     int rs2 = ins.rs2;
+    int signBit = ins.signBit;
+    int extendImmediate;
+    int imm7;
+    int imm5;
 
-    // int test_rd;
-    // int test_rs1 = 0b001101; //13
-    // int test_rs2 = 0b0010001; //17
-    // int test_imm = 0b0011; //3
-
-    // test_rd = (test_rs1 ^ test_imm);
-    // printf("test: %d\n", test_rd);
 
     // if(opcode == OPCODE_I_1){
+    //     extendImmediate = signExtendImmediate(12, signBit, immediate);
+
     //     if(funct3 == FUNCT3_0) //lb
-    //         emu->registers[rd].s = memory_load_byte(emu, (emu->registers[rs1].s + immediate));
+    //         emu->registers[rd].s = memory_load_byte(emu, (emu->registers[rs1].s + extendImmediate));
     //     else if(funct3 == FUNCT3_1) //lh
-    //         emu->registers[rd].s = memory_load_halfword(emu, (emu->registers[rs1].s + immediate));
+    //         emu->registers[rd].s = memory_load_halfword(emu, (emu->registers[rs1].s + extendImmediate));
     //     else if(funct3 == FUNCT3_2) //lw
-    //         emu->registers[rd].s = memory_load_word(emu, (emu->registers[rs1].s + immediate));
+    //         emu->registers[rd].s = memory_load_word(emu, (emu->registers[rs1].s + extendImmediate));
     //     else if(funct3 == FUNCT3_4) //lbu
-    //         emu->registers[rd].u = memory_load_byte(emu, (emu->registers[rs1].u + immediate));
+    //         emu->registers[rd].u = memory_load_byte(emu, (emu->registers[rs1].u + unsignedImmediate));
     //     else if(funct3 == FUNCT3_5) //lhu
-    //         emu->registers[rd].u = memory_load_halfword(emu, (emu->registers[rs1].u + immediate));
+    //         emu->registers[rd].u = memory_load_halfword(emu, (emu->registers[rs1].u + unsignedImmediate));
     //     else if(funct3 == FUNCT3_6) //lwu
-    //         emu->registers[rd].u = memory_load_word(emu, (emu->registers[rs1].u + immediate));
+    //         emu->registers[rd].u = memory_load_word(emu, (emu->registers[rs1].u + unsignedImmediate));
 
     //     programCounter = programCounter 1;
     // }
 
    // else 
+
+
+
     if(opcode == OPCODE_I_2){
-        printf("imm: %0x\n", imm);
+        extendImmediate = signExtendImmediate(12, signBit, immediate);
+        imm7 = (0b111111100000 & extendImmediate) >> 5;
+        imm5 = (0b000000011111 & extendImmediate);  
+
         if(funct3 == FUNCT3_0) //addi
-            emu->registers[rd].s = emu->registers[rs1].s + immediate;
-        else if(funct3 == FUNCT3_1 && imm == FUNCT7_0) //slli
-            emu->registers[rd].s = emu->registers[rs1].s << immediate;
+            emu->registers[rd].s = emu->registers[rs1].s + extendImmediate;
+        else if(funct3 == FUNCT3_1 && imm7 == FUNCT7_0) //slli
+            emu->registers[rd].s = emu->registers[rs1].s << imm5;
         else if(funct3 == FUNCT3_2) //slti 
-            emu->registers[rd].s = (emu->registers[rs1].s < immediate) ? 1:0;
+            emu->registers[rd].s = (emu->registers[rs1].s < extendImmediate) ? 1:0;
         else if(funct3 == FUNCT3_3) //sltiu
-            emu->registers[rd].s = (emu->registers[rs1].s < unsignedImmediate) ? 1:0; //acconunt for unsigned??
+            emu->registers[rd].u = (emu->registers[rs1].u < unsignedImmediate) ? 1:0; //account for unsigned??
         else if(funct3 == FUNCT3_4) //xori
-            emu->registers[rd].s = emu->registers[rs1].s ^ immediate;
-        else if(funct3 == FUNCT3_5 && imm == FUNCT7_0) //srli
-            emu->registers[rd].s = emu->registers[rs1].s >> immediate;
-        else if(funct3 == FUNCT3_5 && imm == FUNCT7_1) {//srai //issues with sign extentsion
-            emu->registers[rd].s = emu->registers[rs1].s >> immediate;
-            printf("registers[%d] = %0x\n", rd, emu->registers[rd].s);
+            emu->registers[rd].s = emu->registers[rs1].s ^ extendImmediate;
+        else if(funct3 == FUNCT3_5 && imm7 == FUNCT7_0) //srli
+            emu->registers[rd].s = emu->registers[rs1].s >> imm5;
+        else if(funct3 == FUNCT3_5 && imm7 == FUNCT7_1) {//srai //issues with sign extentsion
+            emu->registers[rd].s = emu->registers[rs1].s >> imm5;
     }
         else if(funct3 == FUNCT3_6) //ori
-            emu->registers[rd].s = emu->registers[rs1].s | immediate;
+            emu->registers[rd].s = emu->registers[rs1].s | extendImmediate;
         else if(funct3 == FUNCT3_7) //andi
-            emu->registers[rd].s = emu->registers[rs1].s & immediate;
+            emu->registers[rd].s = emu->registers[rs1].s & extendImmediate;
         
         programCounter = programCounter + 1;
     }
 
     else if(opcode == OPCODE_U_1){ //aupic
-        programCounter += (immediate << 12);
+        extendImmediate = signExtendImmediate(20, signBit, immediate);
+
+        programCounter += (extendImmediate << 12);
     }
 
     else if(opcode == OPCODE_I_3){
+        extendImmediate = signExtendImmediate(12, signBit, immediate);
+        imm7 = (0b111111100000 & extendImmediate) >> 5;
+        imm5 = (0b000000011111 & extendImmediate); 
+
         if(funct3 == FUNCT3_0) //addiw
-            emu->registers[rd].s = emu->registers[rs1].s + immediate;            
+            emu->registers[rd].s = emu->registers[rs1].s + extendImmediate;            
         else if(funct3 == FUNCT3_1) //slliw
-            emu->registers[rd].s = emu->registers[rs1].s << immediate;
+            emu->registers[rd].s = emu->registers[rs1].s << extendImmediate;
         else if(funct3 == FUNCT3_5 && funct7 == FUNCT7_0) //srliw
-            emu->registers[rd].s = emu->registers[rs1].s >> immediate;
+            emu->registers[rd].s = emu->registers[rs1].s >> extendImmediate;
         else if(funct3 == FUNCT3_5 && funct7 == FUNCT7_1) //sraiw
-            emu->registers[rd].s = emu->registers[rs1].s >> immediate;
+            emu->registers[rd].s = emu->registers[rs1].s >> extendImmediate;
         
         programCounter = programCounter + 1;
     }
 
     // else if(opcode == OPCODE_S){
+    //     extendImmediate = signExtendImmediate(12, signBit, immediate);
+
     //     if(funct3 == FUNCT3_0) //sb
-    //         memory_store_byte(emu, (emu->registers[rs1].s + immediate), emu->registers[rs2].s);
+    //         memory_store_byte(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
     //     else if (funct3 == FUNCT3_1) //sh
-    //         memory_store_halfword(emu, (emu->registers[rs1].s + immediate), emu->registers[rs2].s);
+    //         memory_store_halfword(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
     //     else if (funct3 == FUNCT3_2) //sw
-    //         memory_store_word(emu, (emu->registers[rs1].s + immediate), emu->registers[rs2].s);
+    //         memory_store_word(emu, (emu->registers[rs1].s + extendImmediate), emu->registers[rs2].s);
         
     //     programCounter = programCounter 1;
     // }
@@ -118,8 +138,10 @@ int executeInstruction(instruction ins, struct emulator * emu){
         programCounter =  programCounter + 1;
     }
 
-    else if(opcode == OPCODE_U_2){ //lui,
-        emu->registers[rd].s = immediate;
+    else if(opcode == OPCODE_U_2){ //lui
+        extendImmediate = signExtendImmediate(20, signBit, immediate);
+
+        emu->registers[rd].s = extendImmediate << 12;
         programCounter = programCounter + 1;
     }
 
@@ -139,64 +161,73 @@ int executeInstruction(instruction ins, struct emulator * emu){
     }
 
     else if(opcode == OPCODE_SB){
+        extendImmediate = signExtendImmediate(13, signBit, immediate);
+
         if(funct3 == FUNCT3_0){ //beq
             if(emu->registers[rs1].s == emu->registers[rs2].s)
-                programCounter = programCounter + (immediate << 1);
+                programCounter = programCounter + (extendImmediate/4);
             else
                 programCounter = programCounter + 1;
             
         }
         else if(funct3 == FUNCT3_1){ //bne
-            if(emu->registers[rs1].s != emu->registers[rs2].s)
-                programCounter = programCounter + (immediate << 1);
+            if(emu->registers[rs1].s != emu->registers[rs2].s){
+                programCounter = programCounter + extendImmediate/4;
+            }
             else
                 programCounter = programCounter + 1;
         }
         else if(funct3 == FUNCT3_4){ //blt
             if(emu->registers[rs1].s < emu->registers[rs2].s)
-                programCounter = programCounter + (immediate << 1);
+                programCounter = programCounter + (extendImmediate/4);
             else
                 programCounter = programCounter + 1;
         }
         else if(funct3 == FUNCT3_5){ //bge
             if(emu->registers[rs1].s >= emu->registers[rs2].s)
-                programCounter = programCounter + (immediate << 1);
+                programCounter = programCounter + (extendImmediate/4);
             else
                 programCounter = programCounter + 1;
         }
         else if(funct3 == FUNCT3_6){ //bltu
             if(emu->registers[rs1].u < emu->registers[rs2].u)
-                programCounter = programCounter + (unsignedImmediate << 1);
+                programCounter = programCounter + (unsignedImmediate);
             else
                 programCounter = programCounter + 1;
         }
         else if(funct3 == FUNCT3_7){ //bgeu
             if(emu->registers[rs1].u >= emu->registers[rs2].u)
-                programCounter = programCounter + (unsignedImmediate << 1);
+                programCounter = programCounter + (unsignedImmediate);
             else
                 programCounter = programCounter + 1;
         }
     }
 
     else if(opcode == OPCODE_I_5){
+        extendImmediate = signExtendImmediate(12, signBit, immediate);
+
         if(funct3 == FUNCT3_0){ //jalr
             emu->registers[rd].s = programCounter + 1;
-            programCounter = emu->registers[rs1].s + immediate;
+            programCounter = emu->registers[rs1].s + extendImmediate/4;
         }
     }
 
     else if(opcode == OPCODE_UJ){  //jal
+        extendImmediate = signExtendImmediate(21, signBit, immediate);
+
         emu->registers[rd].s = programCounter + 1;
-        programCounter = programCounter + (immediate << 1);
+        programCounter = programCounter + extendImmediate/4;
     }
 
     else if(opcode == OPCODE_I_4){
-        if(funct3 == FUNCT3_0 && funct7 == FUNCT7_0){ //ecall
+        extendImmediate = signExtendImmediate(12, signBit, immediate);
+        imm7 = (0b111111100000 & extendImmediate) >> 5;
+
+        if(funct3 == FUNCT3_0 && imm7 == FUNCT7_0){ //ecall
             programCounter = -1; //end program
         }
         
     }
 
     return programCounter;
-
 }
