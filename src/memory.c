@@ -20,15 +20,15 @@ void memory_store_byte(struct emulator *emu, WORD addr, WORD data)
 
 WORD memory_load_word(struct emulator *emu, WORD addr)
 {
-    WORD value = memory_load_halfword(emu, addr) << 16;
-    value |= memory_load_halfword(emu, addr+2);
+    WORD value = memory_load_halfword(emu, addr+2) << 16;
+    value |= memory_load_halfword(emu, addr);
     return value;
 }
 
 WORD memory_load_halfword(struct emulator *emu, WORD addr)
 {
-    WORD value = memory_load_byte(emu, addr) << 8;
-    value |= memory_load_byte(emu, addr+1);
+    WORD value = memory_load_byte(emu, addr+1) << 8;
+    value |= memory_load_byte(emu, addr);
     return value;
 }
 

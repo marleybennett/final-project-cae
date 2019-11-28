@@ -81,3 +81,11 @@ int output_registers(struct emulator *emu, char *filename)
     fclose(f);
     return 0;
 }
+
+int32_t signExtendImmediate(int numBits, int signBit, int32_t signedValue)
+{
+    if(signBit){
+        signedValue = ((0xFFFFFFFF << numBits) | signedValue); 
+    }
+    return signedValue;
+}

@@ -32,4 +32,8 @@ int output_registers(struct emulator *emu, char *filename);
 int init_emulator(struct emulator *emu);
 void deinit_emulator(struct emulator *emu);
 
+
+int32_t signExtendImmediate(int numBits, int signBit, int32_t signedValue);
+
+
 #endif
